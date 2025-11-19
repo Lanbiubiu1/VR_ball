@@ -1,0 +1,25 @@
+# Unity generated folders
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+
+Packages/*.tgz
+
+# IDE
+.vs/
+*.csproj
+*.sln
+*.user
+*.userprefs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unity cache
+MemoryCaptures/
+Records/
