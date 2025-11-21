@@ -1,28 +1,31 @@
 {
   "dependencies": {
     "com.meta.xr.sdk.core": {
-      "version": "file:com.meta.xr.sdk.core-77.0.0.tgz",
+      "version": "77.0.0",
       "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
     },
     "com.meta.xr.sdk.interaction": {
-      "version": "file:com.meta.xr.sdk.interaction-77.0.0.tgz",
+      "version": "77.0.0",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "registry",
       "dependencies": {
-        "com.unity.textmeshpro": "3.0.6",
-        "com.unity.ugui": "1.0.0"
-      }
+        "com.unity.ugui": "1.0.0",
+        "com.unity.textmeshpro": "3.0.6"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.meta.xr.sdk.interaction.ovr": {
-      "version": "file:com.meta.xr.sdk.interaction.ovr-77.0.0.tgz",
+      "version": "77.0.0",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "registry",
       "dependencies": {
-        "com.meta.xr.sdk.interaction": "77.0.0",
-        "com.meta.xr.sdk.core": "77.0.0"
-      }
+        "com.meta.xr.sdk.core": "77.0.0",
+        "com.meta.xr.sdk.interaction": "77.0.0"
+      },
+      "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
       "version": "2.10.2",

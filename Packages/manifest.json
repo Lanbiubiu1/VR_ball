@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "com.meta.xr.sdk.core": "file:com.meta.xr.sdk.core-77.0.0.tgz",
-    "com.meta.xr.sdk.interaction": "file:com.meta.xr.sdk.interaction-77.0.0.tgz",
-    "com.meta.xr.sdk.interaction.ovr": "file:com.meta.xr.sdk.interaction.ovr-77.0.0.tgz",
+    "com.meta.xr.sdk.core": "77.0.0",
+    "com.meta.xr.sdk.interaction": "77.0.0",
+    "com.meta.xr.sdk.interaction.ovr": "77.0.0",
     "com.unity.collab-proxy": "2.10.2",
     "com.unity.feature.development": "1.0.1",
     "com.unity.textmeshpro": "3.0.7",
