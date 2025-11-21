@@ -3,17 +3,20 @@ using UnityEngine;
 public class GhostPathFollower : MonoBehaviour
 {
     [Header("Path Settings")]
-    public Transform[] pathPoints;   // children of the ghost (for organization)
+    public Transform[] pathPoints; 
 
     [Header("Movement Settings")]
     public float moveSpeed = 2f;
     public float waitTimeAtPoint = 0.3f;
 
-    // These store the path we actually follow
-    private Vector3[] cachedWorldPositions;
+    [Header("Rotation Settings")]
+    public float rotationSpeed = 5f;
 
-    private int currentIndex = 0;
-    private int direction = 1;
+    private Vector3[] cachedWorldPositions;
+    private Quaternion[] cachedWorldRotations;
+
+    private int currentIndex = 0;   
+    private int direction = 1;      // 1 = forward, -1 = backward
     private float waitTimer = 0f;
     private bool isWaiting = false;
 
@@ -26,8 +29,16 @@ public class GhostPathFollower : MonoBehaviour
             return;
         }
 
-        cachedWorldPositions = new Vector3[pathPoints.Length + 1];
-        cachedWorldPositions[0] = transform.position; // start position
+        int count = pathPoints.Length + 1;
+
+        cachedWorldPositions = new Vector3[count];
+        cachedWorldRotations = new Quaternion[count];
+
+        // Index 0: starting transform
+        cachedWorldPositions[0] = transform.position;
+        cachedWorldRotations[0] = transform.rotation;
+
+        // Indices 1..N: path points as placed in the scene
         for (int i = 0; i < pathPoints.Length; i++)
         {
             if (pathPoints[i] == null)
@@ -37,12 +48,12 @@ public class GhostPathFollower : MonoBehaviour
                 return;
             }
 
-            cachedWorldPositions[i+1] = pathPoints[i].position; // world-space
+            cachedWorldPositions[i + 1] = pathPoints[i].position;
+            cachedWorldRotations[i + 1] = pathPoints[i].rotation;
         }
 
-        // Optional: you can now ignore the transforms entirely
-        // pathPoints = null;
-
+        transform.position = cachedWorldPositions[0];
+        transform.rotation = cachedWorldRotations[0];
     }
 
     private void Update()
@@ -64,13 +75,22 @@ public class GhostPathFollower : MonoBehaviour
 
     private void MoveAlongCachedPath()
     {
-        Vector3 target = cachedWorldPositions[currentIndex];
-        Vector3 toTarget = target - transform.position;
+        Vector3 targetPos = cachedWorldPositions[currentIndex];
+        Quaternion targetRot = cachedWorldRotations[currentIndex];
+
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetRot,
+            rotationSpeed * Time.deltaTime
+        );
+
+        Vector3 toTarget = targetPos - transform.position;
         float distSqr = toTarget.sqrMagnitude;
 
+        // snap to target and handle arrival
         if (distSqr < 0.0001f)
         {
-            transform.position = target;
+            transform.position = targetPos;
             OnReachPoint();
             return;
         }
@@ -79,7 +99,7 @@ public class GhostPathFollower : MonoBehaviour
 
         if (step.sqrMagnitude >= distSqr)
         {
-            transform.position = target;
+            transform.position = targetPos;
             OnReachPoint();
         }
         else
@@ -90,12 +110,16 @@ public class GhostPathFollower : MonoBehaviour
 
     private void OnReachPoint()
     {
+        // hard-snap to remove any tiny interpolation error
+        transform.rotation = cachedWorldRotations[currentIndex];
+
         if (waitTimeAtPoint > 0f)
         {
             isWaiting = true;
             waitTimer = waitTimeAtPoint;
         }
 
+        // return trip lol
         if (currentIndex == cachedWorldPositions.Length - 1)
             direction = -1;
         else if (currentIndex == 0)
