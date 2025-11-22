@@ -48,6 +48,12 @@ public class RacketTrigger : MonoBehaviour
         // 优先使用触发到的球体刚体
         Rigidbody rb = other.attachedRigidbody != null ? other.attachedRigidbody : ball.GetComponent<Rigidbody>();
 
+        var hoverObj = rb.GetComponent<HoverRespawnObject>();
+        if (hoverObj != null)
+        {
+            hoverObj.ActivatePhysicsFromHit();
+        }
+
         // 反弹方向 = 平面法线
         Vector3 dir = normal;
         float racketSpeed = smoothedVelocity.magnitude;
