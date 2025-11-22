@@ -14,6 +14,10 @@ public class GhostCollision : MonoBehaviour
 
     public void KillGhost()
     {
+        if (ScoreUI.Instance != null)
+        {
+            ScoreUI.Instance.AddHit();
+        }
         // You can still disable trigger or whole ghost here
         gameObject.SetActive(false);
     }
