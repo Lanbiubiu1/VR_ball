@@ -1,4 +1,5 @@
 using UnityEngine;
+using NaughtyAttributes;
 
 public class GhostCollision : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GhostCollision : MonoBehaviour
         _col.isTrigger = true;
     }
 
+    [Button]
     public void KillGhost()
     {
         if (ScoreUI.Instance != null)
