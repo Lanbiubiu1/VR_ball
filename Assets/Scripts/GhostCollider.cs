@@ -20,8 +20,16 @@ public class GhostCollision : MonoBehaviour
         {
             ScoreUI.Instance.AddHit();
         }
-        // You can still disable trigger or whole ghost here
-        gameObject.SetActive(false);
+        // Play dissolve instead of instantly turning off the object
+        GhostDissolve dissolve = GetComponent<GhostDissolve>();
+        if (dissolve != null)
+        {
+            dissolve.PlayDissolveAndDisable();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
