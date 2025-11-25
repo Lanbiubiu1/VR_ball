@@ -7,8 +7,7 @@ public class GhostCollision : MonoBehaviour
 
     private void Awake()
     {
-        _col = GetComponent<Collider>();
-
+        _col = GetComponentInChildren<Collider>();
         // Ensure it's trigger-only
         _col.isTrigger = true;
     }
