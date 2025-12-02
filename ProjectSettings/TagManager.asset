@@ -29,6 +29,7 @@ TagManager:
   - PassThroughButton
   - PassThrough
   - Ball
+  - Bat
   layers:
   - Default
   - TransparentFX

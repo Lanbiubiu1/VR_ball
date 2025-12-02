@@ -991,6 +991,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 576871592}
     m_Modifications:
     - target: {fileID: 6007180743642840512, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
+      propertyPath: m_Radius
+      value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 6007180743642840512, guid: 5a796ed211b2cec468ecadad11acb207, type: 3}
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
@@ -1267,13 +1271,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Little_Ghost_ZOMbi (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8954800359469898616, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8954800359469898617, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 680911653}
+    - targetCorrespondingSourceObject: {fileID: 8954800359469898617, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 680911654}
   m_SourcePrefab: {fileID: 100100000, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
 --- !u!4 &169529969 stripped
 Transform:
@@ -1534,13 +1542,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9203938796069245881, guid: b100033bd257c8e479a5c0a5b148fa2c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9203938796069245880, guid: b100033bd257c8e479a5c0a5b148fa2c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1282336884}
+    - targetCorrespondingSourceObject: {fileID: 9203938796069245880, guid: b100033bd257c8e479a5c0a5b148fa2c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1282336885}
   m_SourcePrefab: {fileID: 100100000, guid: b100033bd257c8e479a5c0a5b148fa2c, type: 3}
 --- !u!1 &229014445
 GameObject:
@@ -2849,8 +2861,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   racketPlane: {fileID: 400600671}
   ball: {fileID: 546324416}
-  minHitSpeed: 6
-  speedMultiplier: 1.2
+  minHitSpeed: 10
+  speedMultiplier: 1.5
   velocitySmoothing: 0.2
   debugVelocity: 0
 --- !u!65 &400600674
@@ -3680,7 +3692,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.044, y: 1.133, z: -3.19}
-  m_LocalScale: {x: 0.06, y: 0.06, z: 0.06}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1788714660}
@@ -4096,6 +4108,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 5342546470062797661}
+--- !u!136 &680911654
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680911651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.48
+  m_Height: 1.44
+  m_Direction: 1
+  m_Center: {x: -0.0075883865, y: 0.45, z: 0.00768137}
 --- !u!1001 &682561681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4107,6 +4142,10 @@ PrefabInstance:
     - target: {fileID: 2602231374797837610, guid: 855c90c429434444fbe3ca2b5507ab04, type: 3}
       propertyPath: m_Name
       value: LittleGhost_LP (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2602231374797837611, guid: 855c90c429434444fbe3ca2b5507ab04, type: 3}
+      propertyPath: m_Radius
+      value: 0.27
       objectReference: {fileID: 0}
     - target: {fileID: 2602231374797837611, guid: 855c90c429434444fbe3ca2b5507ab04, type: 3}
       propertyPath: m_IsTrigger
@@ -7031,6 +7070,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1123508696}
   - component: {fileID: 1123508697}
+  - component: {fileID: 1123508698}
   m_Layer: 0
   m_Name: MetaQuestTouchPlus_Right
   m_TagString: Untagged
@@ -7077,6 +7117,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1123508698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123508695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4a620be2d83a643959caba016ef3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereRadius: 0.15
+  detectionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  drawGizmos: 1
+  controller: 2
+  triggerAxis: 1
+  triggerThreshold: 0.5
+  maxResults: 16
+  requiredTag: 
+  attachTag: Bat
+  resetLocalPosition: 0
+  resetLocalRotation: 0
+  resetLocalScale: 0
+  setRigidbodyKinematicOnAttach: 1
 --- !u!1 &1127400249
 GameObject:
   m_ObjectHideFlags: 0
@@ -8191,6 +8258,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 2145574446}
+--- !u!136 &1282336885
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282336882}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.48
+  m_Height: 1.44
+  m_Direction: 1
+  m_Center: {x: -0.0075883865, y: 0.45, z: 0.00768137}
 --- !u!1 &1284767376
 GameObject:
   m_ObjectHideFlags: 0
@@ -8314,6 +8404,38 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.009499997, y: 0.01770607, z: -0.0011095554}
     m_Extent: {x: 0.04527676, y: 0.05372102, z: 0.06648618}
   m_DirtyAABB: 0
+--- !u!1 &1314521901 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8839895569409382208, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
+  m_PrefabInstance: {fileID: 1851083664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1314521905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314521901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4a620be2d83a643959caba016ef3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereRadius: 0.15
+  detectionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  drawGizmos: 1
+  controller: 3
+  triggerAxis: 1
+  triggerThreshold: 0.5
+  maxResults: 16
+  requiredTag: 
+  attachTag: Bat
+  resetLocalPosition: 1
+  resetLocalRotation: 1
+  resetLocalScale: 0
+  setRigidbodyKinematicOnAttach: 1
 --- !u!1 &1317735904
 GameObject:
   m_ObjectHideFlags: 0
@@ -9841,8 +9963,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   racketPlane: {fileID: 1617152019}
   ball: {fileID: 546324416}
-  minHitSpeed: 6
-  speedMultiplier: 1.2
+  minHitSpeed: 10
+  speedMultiplier: 1.5
   velocitySmoothing: 0.2
   debugVelocity: 0
 --- !u!54 &1617152022
@@ -10106,7 +10228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1668679425
 Transform:
   m_ObjectHideFlags: 0
@@ -11328,6 +11450,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4148778239110795873, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
       insertIndex: 1
       addedObject: {fileID: 1851083667}
+    - targetCorrespondingSourceObject: {fileID: 8839895569409382208, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1314521905}
+    - targetCorrespondingSourceObject: {fileID: 1168042863143544391, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1957470583}
   m_SourcePrefab: {fileID: 100100000, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
 --- !u!4 &1851083665 stripped
 Transform:
@@ -11728,6 +11856,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1930750774}
   - component: {fileID: 1930750775}
+  - component: {fileID: 1930750776}
   m_Layer: 0
   m_Name: MetaQuestTouchPlus_Left
   m_TagString: Untagged
@@ -11774,6 +11903,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1930750776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930750773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4a620be2d83a643959caba016ef3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereRadius: 0.15
+  detectionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  drawGizmos: 1
+  controller: 1
+  triggerAxis: 1
+  triggerThreshold: 0.5
+  maxResults: 16
+  requiredTag: 
+  attachTag: Bat
+  resetLocalPosition: 0
+  resetLocalRotation: 0
+  resetLocalScale: 0
+  setRigidbodyKinematicOnAttach: 1
 --- !u!1 &1942243959
 GameObject:
   m_ObjectHideFlags: 0
@@ -11897,6 +12053,38 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00616638, y: -0.030066561, z: -0.020585023}
     m_Extent: {x: 0.033926036, y: 0.041736547, z: 0.054627255}
   m_DirtyAABB: 0
+--- !u!1 &1957470579 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1168042863143544391, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
+  m_PrefabInstance: {fileID: 1851083664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1957470583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957470579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad4a620be2d83a643959caba016ef3cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sphereRadius: 0.15
+  detectionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  drawGizmos: 1
+  controller: 2
+  triggerAxis: 1
+  triggerThreshold: 0.5
+  maxResults: 16
+  requiredTag: 
+  attachTag: Bat
+  resetLocalPosition: 1
+  resetLocalRotation: 1
+  resetLocalScale: 0
+  setRigidbodyKinematicOnAttach: 1
 --- !u!1 &1959240869
 GameObject:
   m_ObjectHideFlags: 0
@@ -13670,7 +13858,7 @@ GameObject:
   - component: {fileID: 5436868260859032191}
   m_Layer: 0
   m_Name: tennis_bat
-  m_TagString: Untagged
+  m_TagString: Bat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13703,7 +13891,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5436868260859032186}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 43f86b14a27b52f4f9298c33015b5c26, type: 3}
   m_Name: 
