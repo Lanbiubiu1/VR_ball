@@ -15,7 +15,12 @@ public class GhostCollision : MonoBehaviour
     [Button]
     public void KillGhost()
     {
-        // Play dissolve instead of instantly turning off the object
+        GhostTeleportAndPathFollower teleporter = GetComponentInChildren<GhostTeleportAndPathFollower>();
+        if (teleporter != null)
+        {
+            teleporter.StopTeleportAndCleanup();
+        }
+
         GhostDissolve dissolve = GetComponent<GhostDissolve>();
         if (dissolve != null)
         {
