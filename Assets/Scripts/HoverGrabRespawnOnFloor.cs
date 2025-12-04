@@ -21,6 +21,9 @@ public class HoverRespawnObject : MonoBehaviour
     [Header("Floor Settings")]
     public string floorObjectName = "Floor";  // your MeshCollider object name
 
+    [Header("Out Of Bounds (fallback)")]
+    public float minYForRespawn = -10f;       // if ball.y < this → emergency respawn
+
     private Rigidbody _rb;
     private Grabbable _grabbable;             // may be null for Ball
 
@@ -29,6 +32,9 @@ public class HoverRespawnObject : MonoBehaviour
 
     private bool _isHeld = false;             // only meaningful for Bat
     private bool _isRespawning = false;
+
+    // NEW: track consecutive floor hits for the ball
+    private int _ballFloorHitCount = 0;
 
     private void Awake()
     {
@@ -57,6 +63,19 @@ public class HoverRespawnObject : MonoBehaviour
     {
         // All objects start hovering/frozen
         FreezeAtRespawnPoint();
+    }
+
+    // Optional: emergency out-of-bounds respawn for the ball
+    private void Update()
+    {
+        if (kind == ObjectKind.Ball && !_isRespawning)
+        {
+            if (transform.position.y < minYForRespawn)
+            {
+                _ballFloorHitCount = 0;
+                StartCoroutine(RespawnAfterDelay());
+            }
+        }
     }
 
     // ---- GRAB / RELEASE (Bat only) ----
@@ -101,19 +120,47 @@ public class HoverRespawnObject : MonoBehaviour
 
         _rb.isKinematic = false;
         _rb.useGravity = true;
+
+        // hitting / serving the ball breaks the floor-hit chain
+        _ballFloorHitCount = 0;
     }
 
-    // ---- FLOOR COLLISION → RESPAWN (both) ----
+    // ---- COLLISION LOGIC ----
     private void OnCollisionEnter(Collision collision)
     {
         if (_isRespawning) return;
 
-        // Prevent bat from respawning while still held
-        if (kind == ObjectKind.Bat && _isHeld) return;
+        string otherName = collision.collider.gameObject.name;
 
-        if (collision.collider.gameObject.name == floorObjectName)
+        // floor logic
+        if (otherName == floorObjectName)
         {
-            StartCoroutine(RespawnAfterDelay());
+            if (kind == ObjectKind.Bat)
+            {
+                // Bat: respawn immediately on floor
+                if (_isHeld) return; // still in hand: ignore
+                StartCoroutine(RespawnAfterDelay());
+            }
+            else if (kind == ObjectKind.Ball)
+            {
+                // Ball: only respawn after TWO consecutive floor hits
+                _ballFloorHitCount++;
+
+                if (_ballFloorHitCount >= 2)
+                {
+                    _ballFloorHitCount = 0;
+                    StartCoroutine(RespawnAfterDelay());
+                }
+            }
+        }
+        else
+        {
+            // Hit something that is NOT the floor (wall, racket, ghost...)
+            // → break the "consecutive floor hit" chain for the ball
+            if (kind == ObjectKind.Ball)
+            {
+                _ballFloorHitCount = 0;
+            }
         }
     }
 

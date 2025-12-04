@@ -15,10 +15,6 @@ public class GhostCollision : MonoBehaviour
     [Button]
     public void KillGhost()
     {
-        if (ScoreUI.Instance != null)
-        {
-            ScoreUI.Instance.AddHit();
-        }
         // Play dissolve instead of instantly turning off the object
         GhostDissolve dissolve = GetComponent<GhostDissolve>();
         if (dissolve != null)
@@ -27,6 +23,11 @@ public class GhostCollision : MonoBehaviour
         }
         else
         {
+            if (GameManager.Instance != null)
+            {
+                Debug.Log("KILL");
+                GameManager.Instance.AddHit();
+            }
             gameObject.SetActive(false);
         }
     }
