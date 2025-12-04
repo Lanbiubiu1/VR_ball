@@ -39,6 +39,11 @@ public class GhostDissolve : MonoBehaviour
         }
 
         StartCoroutine(DissolveRoutine());
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddHit();
+        }
     }
 
     private IEnumerator DissolveRoutine()

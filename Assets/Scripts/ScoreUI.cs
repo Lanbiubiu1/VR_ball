@@ -7,30 +7,29 @@ public class ScoreUI : MonoBehaviour
 {
     public static ScoreUI Instance;
 
-    public TMP_Text hitText;   // drag your TMP object here in Inspector
+    public TMP_Text hitText;
+    public TMP_Text levelText;
 
-    private int hitCount = 0;
 
     private void Awake()
     {
         // simple singleton
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-
-        UpdateText();
     }
 
-    public void AddHit()
-    {
-        hitCount++;
-        UpdateText();
-    }
-
-    private void UpdateText()
+    public void UpdateText(int hit, int total)
     {
         if (hitText != null)
         {
-            hitText.text = $"Ghosts hit: {hitCount}";
+            hitText.text = $"Ghosts hit: {hit} / {total}";
+        }
+    }
+    public void UpdateLevelText(int level)
+    {
+        if (levelText != null)
+        {
+            levelText.text = $"Current level: {level}";
         }
     }
 }
