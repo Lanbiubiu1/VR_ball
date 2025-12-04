@@ -33,8 +33,17 @@ public class HoverRespawnObject : MonoBehaviour
     private bool _isHeld = false;             // only meaningful for Bat
     private bool _isRespawning = false;
 
-    // NEW: track consecutive floor hits for the ball
     private int _ballFloorHitCount = 0;
+
+    // COMBO
+    private int _currentCombo = 0;            // current combo for this ball life
+    private int _maxCombo = 0;                // max combo across the run
+
+    [Header("Combo Settings")]
+    [SerializeField]
+    private float comboHitCooldown = 0.1f;    // ignore repeated hits within this time window
+
+    private float _lastComboHitTime = -999f;
 
     private void Awake()
     {
@@ -63,6 +72,12 @@ public class HoverRespawnObject : MonoBehaviour
     {
         // All objects start hovering/frozen
         FreezeAtRespawnPoint();
+
+        // Initialize combo UI once (ball only)
+        if (kind == ObjectKind.Ball && ScoreUI.Instance != null)
+        {
+            ScoreUI.Instance.UpdateComboText(_maxCombo);
+        }
     }
 
     // Optional: emergency out-of-bounds respawn for the ball
@@ -73,6 +88,7 @@ public class HoverRespawnObject : MonoBehaviour
             if (transform.position.y < minYForRespawn)
             {
                 _ballFloorHitCount = 0;
+                _currentCombo = 0; // reset combo on emergency respawn
                 StartCoroutine(RespawnAfterDelay());
             }
         }
@@ -113,7 +129,7 @@ public class HoverRespawnObject : MonoBehaviour
         _rb.isKinematic = false;
     }
 
-    // ---- BALL: called when bat hits it ----
+    // ---- BALL: called when bat hits it (from RacketTrigger) ----
     public void ActivatePhysicsFromHit()
     {
         if (kind != ObjectKind.Ball) return;
@@ -123,6 +139,27 @@ public class HoverRespawnObject : MonoBehaviour
 
         // hitting / serving the ball breaks the floor-hit chain
         _ballFloorHitCount = 0;
+
+        // --- COMBO LOGIC WITH COOLDOWN ---
+        // Ignore repeated calls from OnTriggerStay within a tiny time window
+        if (Time.time - _lastComboHitTime < comboHitCooldown)
+        {
+            return;
+        }
+
+        _lastComboHitTime = Time.time;
+
+        _currentCombo++;  // one more bat-ball collision in this life
+
+        if (_currentCombo > _maxCombo)
+        {
+            _maxCombo = _currentCombo;
+
+            if (ScoreUI.Instance != null)
+            {
+                ScoreUI.Instance.UpdateComboText(_maxCombo);
+            }
+        }
     }
 
     // ---- COLLISION LOGIC ----
@@ -149,6 +186,7 @@ public class HoverRespawnObject : MonoBehaviour
                 if (_ballFloorHitCount >= 2)
                 {
                     _ballFloorHitCount = 0;
+                    _currentCombo = 0;   // reset combo on respawn
                     StartCoroutine(RespawnAfterDelay());
                 }
             }
@@ -195,5 +233,11 @@ public class HoverRespawnObject : MonoBehaviour
         // Hover / freeze in air
         _rb.useGravity = false;
         _rb.isKinematic = true;
+
+        if (kind == ObjectKind.Ball)
+        {
+            _currentCombo = 0;
+            _ballFloorHitCount = 0;
+        }
     }
 }

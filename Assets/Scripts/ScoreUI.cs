@@ -9,6 +9,7 @@ public class ScoreUI : MonoBehaviour
 
     public TMP_Text hitText;
     public TMP_Text levelText;
+    public TMP_Text comboText;
 
 
     private void Awake()
@@ -30,6 +31,14 @@ public class ScoreUI : MonoBehaviour
         if (levelText != null)
         {
             levelText.text = $"Current level: {level}";
+        }
+    }
+
+    public void UpdateComboText(int combo)
+    {
+        if (comboText != null)
+        {
+            comboText.text = $"Max combo: x{combo}";
         }
     }
 }
