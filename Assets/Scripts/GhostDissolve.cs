@@ -42,7 +42,6 @@ public class GhostDissolve : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            Debug.Log("KILL");
             GameManager.Instance.AddHit();
         }
     }

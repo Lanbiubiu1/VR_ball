@@ -7,7 +7,8 @@ public class ScoreUI : MonoBehaviour
 {
     public static ScoreUI Instance;
 
-    public TMP_Text hitText;   // drag your TMP object here in Inspector
+    public TMP_Text hitText;
+    public TMP_Text levelText;
 
 
     private void Awake()
@@ -22,6 +23,13 @@ public class ScoreUI : MonoBehaviour
         if (hitText != null)
         {
             hitText.text = $"Ghosts hit: {hit} / {total}";
+        }
+    }
+    public void UpdateLevelText(int level)
+    {
+        if (levelText != null)
+        {
+            levelText.text = $"Current level: {level}";
         }
     }
 }

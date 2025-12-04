@@ -25,7 +25,6 @@ public class GhostCollision : MonoBehaviour
         {
             if (GameManager.Instance != null)
             {
-                Debug.Log("KILL");
                 GameManager.Instance.AddHit();
             }
             gameObject.SetActive(false);

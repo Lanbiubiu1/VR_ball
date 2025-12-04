@@ -105,5 +105,6 @@ public class GameManager : MonoBehaviour
 
         // update UI with new level’s totals
         ScoreUI.Instance.UpdateText(hitCount, totalGhosts);
+        ScoreUI.Instance.UpdateLevelText(currentLevel);
     }
 }
