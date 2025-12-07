@@ -11,10 +11,17 @@ public class GameManager : MonoBehaviour
     [Tooltip("Parent object that contains Level1, Level2, ... as children")]
     public Transform ghostManagerRoot;
 
+    [Header("Timer")]
+    [Tooltip("Time (in seconds) for each level. Index 0 = Level 1, etc.")]
+    public List<float> levelTimesSeconds = new List<float>();
+
     private int hitCount = 0;
     private int totalGhosts = 0;
     private int currentLevel = 0;   // 1-based index (1 = Level1)
     private int levelsCount = 0;
+
+    private float currentTimeLeft = 0f;
+    private bool timerRunning = false;
 
     private void Awake()
     {
@@ -38,18 +45,64 @@ public class GameManager : MonoBehaviour
         GoToNextLevel();
     }
 
+    private void Update()
+    {
+        if (!timerRunning) return;
+
+        currentTimeLeft -= Time.deltaTime;
+        if (currentTimeLeft <= 0f)
+        {
+            currentTimeLeft = 0f;
+            timerRunning = false;   // no more timer updates
+        }
+
+        if (TimerUI.Instance != null)
+        {
+            TimerUI.Instance.UpdateTimerText(currentTimeLeft);
+        }
+    }
+
+    private float GetTimeForLevel(int levelIndex1Based)
+    {
+        int idx = levelIndex1Based - 1;
+
+        if (levelTimesSeconds == null || levelTimesSeconds.Count == 0)
+        {
+            return 0f; // no timer config
+        }
+
+        if (idx >= 0 && idx < levelTimesSeconds.Count)
+        {
+            return Mathf.Max(0f, levelTimesSeconds[idx]);
+        }
+
+        // If there are more levels than times, reuse the last time
+        return Mathf.Max(0f, levelTimesSeconds[levelTimesSeconds.Count - 1]);
+    }
+
     private void GoToNextLevel()
     {
         if (currentLevel >= levelsCount)
         {
             Debug.Log("All levels cleared!");
+            timerRunning = false;
             return;
         }
 
         currentLevel++;         // move to Level1, Level2, ...
         hitCount = 0;
 
-        SetGhostActiveByLevel(); // also sets totalGhosts + updates UI
+        // Set ghosts / level UI
+        SetGhostActiveByLevel();
+
+        // Reset timer for this level
+        currentTimeLeft = GetTimeForLevel(currentLevel);
+        timerRunning = currentTimeLeft > 0f;
+
+        if (TimerUI.Instance != null)
+        {
+            TimerUI.Instance.UpdateTimerText(currentTimeLeft);
+        }
     }
 
     public void AddHit()
