@@ -1394,9 +1394,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghostManagerRoot: {fileID: 1281106633}
   levelTimesSeconds:
+  - 10
   - 60
   - 60
-  - 60
+  playerCamera: {fileID: 782956834}
+  playerMovementScripts: []
+  winScreen: {fileID: 455428777}
+  loseScreen: {fileID: 1370220505}
+  ghostChaseSpeed: 5
+  ghostReachDistance: 0.1
 --- !u!4 &132470618
 Transform:
   m_ObjectHideFlags: 0

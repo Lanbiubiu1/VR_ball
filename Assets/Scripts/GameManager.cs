@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +15,16 @@ public class GameManager : MonoBehaviour
     [Tooltip("Time (in seconds) for each level. Index 0 = Level 1, etc.")]
     public List<float> levelTimesSeconds = new List<float>();
 
+    [Header("Player")]
+    [Tooltip("Root transform of the player / XR rig")]
+    public Transform playerRoot;
+
+    [Header("Screens")]
+    [Tooltip("Win screen panel (under Canvas)")]
+    public GameObject winScreen;
+    [Tooltip("Lose screen panel (under Canvas)")]
+    public GameObject loseScreen;
+
     private int hitCount = 0;
     private int totalGhosts = 0;
     private int currentLevel = 0;   // 1-based index (1 = Level1)
@@ -22,6 +32,13 @@ public class GameManager : MonoBehaviour
 
     private float currentTimeLeft = 0f;
     private bool timerRunning = false;
+
+    private bool gameOver = false;
+    private bool loseRoutineStarted = false;
+
+    private Vector3 initialPlayerPos;
+    private Quaternion initialPlayerRot;
+    private bool hasInitialPlayerPos = false;
 
     private void Awake()
     {
@@ -38,6 +55,18 @@ public class GameManager : MonoBehaviour
         levelsCount = ghostManagerRoot.childCount;
 
         SetAllGhostDisable();
+
+        // record initial player position/rotation
+        if (playerRoot != null)
+        {
+            initialPlayerPos = playerRoot.position;
+            initialPlayerRot = playerRoot.rotation;
+            hasInitialPlayerPos = true;
+        }
+
+        // ensure screens start hidden (and their children)
+        SetScreenActive(winScreen, false);
+        SetScreenActive(loseScreen, false);
     }
 
     private void Start()
@@ -47,13 +76,19 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!timerRunning) return;
+        if (gameOver || !timerRunning) return;
 
         currentTimeLeft -= Time.deltaTime;
         if (currentTimeLeft <= 0f)
         {
             currentTimeLeft = 0f;
-            timerRunning = false;   // no more timer updates
+            timerRunning = false;   // timer stops at 0
+
+            if (!loseRoutineStarted)
+            {
+                loseRoutineStarted = true;
+                StartCoroutine(LoseAfterDelay(5f)); // wait 5 seconds, then lose
+            }
         }
 
         if (TimerUI.Instance != null)
@@ -82,20 +117,24 @@ public class GameManager : MonoBehaviour
 
     private void GoToNextLevel()
     {
+        if (gameOver) return;
+
         if (currentLevel >= levelsCount)
         {
-            Debug.Log("All levels cleared!");
-            timerRunning = false;
+            // already at or beyond last level – should have won before
             return;
         }
 
         currentLevel++;         // move to Level1, Level2, ...
         hitCount = 0;
 
-        // Set ghosts / level UI
+        // reset player position to initial scene pos
+        ResetPlayerToInitial();
+
+        // enable ghosts / level UI
         SetGhostActiveByLevel();
 
-        // Reset timer for this level
+        // reset timer for this level
         currentTimeLeft = GetTimeForLevel(currentLevel);
         timerRunning = currentTimeLeft > 0f;
 
@@ -103,17 +142,67 @@ public class GameManager : MonoBehaviour
         {
             TimerUI.Instance.UpdateTimerText(currentTimeLeft);
         }
+
+        // reset lose flag when entering a new level
+        loseRoutineStarted = false;
     }
 
     public void AddHit()
     {
+        if (gameOver) return;
+
         hitCount++;
         ScoreUI.Instance.UpdateText(hitCount, totalGhosts);
 
         if (hitCount >= totalGhosts)
         {
-            GoToNextLevel();
+            // cleared this level
+            if (currentLevel >= levelsCount)
+            {
+                // cleared last level -> win immediately
+                WinGame();
+            }
+            else
+            {
+                GoToNextLevel();
+            }
         }
+    }
+
+    private IEnumerator LoseAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (!gameOver)  // if we didn't already win in those 5s
+        {
+            LoseGame();
+        }
+    }
+
+    private void WinGame()
+    {
+        if (gameOver) return;
+        gameOver = true;
+        timerRunning = false;
+
+        // snap player back to original position/orientation
+        ResetPlayerToInitial();
+
+        // show win screen + children
+        SetScreenActive(winScreen, true);
+    }
+
+    private void LoseGame()
+    {
+        if (gameOver) return;
+        gameOver = true;
+        timerRunning = false;
+
+        // snap player back to original position/orientation
+        ResetPlayerToInitial();
+
+        // show lose screen + children
+        SetScreenActive(loseScreen, true);
     }
 
     /// <summary>
@@ -157,14 +246,57 @@ public class GameManager : MonoBehaviour
             level.GetChild(i).gameObject.SetActive(true);
         }
 
-        // update UI with new level�s totals
+        // update UI with new level’s totals
         ScoreUI.Instance.UpdateText(hitCount, totalGhosts);
         ScoreUI.Instance.UpdateLevelText(currentLevel);
     }
 
+    // Central helper for resetting player pose
+    private void ResetPlayerToInitial()
+    {
+        if (!hasInitialPlayerPos || playerRoot == null) return;
+
+        playerRoot.position = initialPlayerPos;
+        playerRoot.rotation = initialPlayerRot;
+    }
+
+    // Enable/disable a screen and all its children safely
+    private void SetScreenActive(GameObject screen, bool active)
+    {
+        if (screen == null) return;
+
+        screen.SetActive(active);
+
+        foreach (Transform child in screen.transform)
+        {
+            child.gameObject.SetActive(active);
+        }
+    }
+
+    // Replay button: soft reset (no scene reload)
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // reset state
+        gameOver = false;
+        timerRunning = false;
+        loseRoutineStarted = false;
+
+        hitCount = 0;
+        currentLevel = 0;
+        totalGhosts = 0;
+
+        // disable both screens + their children
+        SetScreenActive(winScreen, false);
+        SetScreenActive(loseScreen, false);
+
+        // reset ghosts
+        SetAllGhostDisable();
+
+        // reset player transform
+        ResetPlayerToInitial();
+
+        // restart from level 1
+        GoToNextLevel();
     }
 
     public void QuitGame()
