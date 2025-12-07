@@ -24,11 +24,22 @@ public class HoverRespawnObject : MonoBehaviour
     [Header("Out Of Bounds (fallback)")]
     public float minYForRespawn = -10f;       // if ball.y < this → emergency respawn
 
+    [Header("Player / Camera")]
+    [Tooltip("Player head / main camera (e.g. CenterEyeAnchor)")]
+    public Transform playerCamera;
+
     private Rigidbody _rb;
     private Grabbable _grabbable;             // may be null for Ball
 
+    // Fallback absolute spawn
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
+
+    // Camera-relative spawn data
+    private Vector3 _localOffsetXZ;           // offset around camera in its yaw-space
+    private float _spawnY;                    // fixed world Y height
+    private float _yawOffset;                 // object yaw relative to camera yaw (for bat)
+    private bool _hasCameraOffset = false;
 
     private bool _isHeld = false;             // only meaningful for Bat
     private bool _isRespawning = false;
@@ -50,6 +61,7 @@ public class HoverRespawnObject : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _grabbable = GetComponent<Grabbable>();  // will be null for Ball
 
+        // Store absolute pose as final fallback
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
 
@@ -70,6 +82,30 @@ public class HoverRespawnObject : MonoBehaviour
 
     private void Start()
     {
+        // Record camera-relative offset based on how you placed camera + bat + ball in the scene
+        if (playerCamera != null)
+        {
+            Vector3 camPos = playerCamera.position;
+            Vector3 objPos = transform.position;
+
+            // Use yaw-only rotation for local offset
+            float camYaw = playerCamera.eulerAngles.y;
+            Quaternion camYawRot = Quaternion.Euler(0f, camYaw, 0f);
+
+            Vector3 worldOffset = objPos - camPos;
+            // Convert to camera-yaw-local space
+            Vector3 localOffset = Quaternion.Inverse(camYawRot) * worldOffset;
+
+            _localOffsetXZ = new Vector3(localOffset.x, 0f, localOffset.z);
+            _spawnY = objPos.y;
+
+            // Yaw offset between object and camera (used for bat)
+            float objYaw = transform.eulerAngles.y;
+            _yawOffset = Mathf.DeltaAngle(camYaw, objYaw);
+
+            _hasCameraOffset = true;
+        }
+
         // All objects start hovering/frozen
         FreezeAtRespawnPoint();
 
@@ -141,7 +177,6 @@ public class HoverRespawnObject : MonoBehaviour
         _ballFloorHitCount = 0;
 
         // --- COMBO LOGIC WITH COOLDOWN ---
-        // Ignore repeated calls from OnTriggerStay within a tiny time window
         if (Time.time - _lastComboHitTime < comboHitCooldown)
         {
             return;
@@ -194,7 +229,6 @@ public class HoverRespawnObject : MonoBehaviour
         else
         {
             // Hit something that is NOT the floor (wall, racket, ghost...)
-            // → break the "consecutive floor hit" chain for the ball
             if (kind == ObjectKind.Ball)
             {
                 _ballFloorHitCount = 0;
@@ -221,8 +255,45 @@ public class HoverRespawnObject : MonoBehaviour
 
     private void FreezeAtRespawnPoint()
     {
-        Vector3 targetPos = respawnPoint != null ? respawnPoint.position : _initialPosition;
-        Quaternion targetRot = respawnPoint != null ? respawnPoint.rotation : _initialRotation;
+        Vector3 targetPos;
+        Quaternion targetRot;
+
+        if (_hasCameraOffset && playerCamera != null)
+        {
+            Vector3 camPos = playerCamera.position;
+            float camYaw = playerCamera.eulerAngles.y;
+            Quaternion camYawRot = Quaternion.Euler(0f, camYaw, 0f);
+
+            // Rotate the stored local offset with the current camera yaw
+            Vector3 worldOffset = camYawRot * _localOffsetXZ;
+
+            targetPos = new Vector3(
+                camPos.x + worldOffset.x,
+                _spawnY,
+                camPos.z + worldOffset.z
+            );
+
+            if (kind == ObjectKind.Ball)
+            {
+                // Ball always faces camera forward
+                targetRot = camYawRot;
+            }
+            else // Bat
+            {
+                // Bat keeps its original yaw offset relative to camera
+                targetRot = Quaternion.Euler(0f, camYaw + _yawOffset, 0f);
+            }
+        }
+        else if (respawnPoint != null)
+        {
+            targetPos = respawnPoint.position;
+            targetRot = respawnPoint.rotation;
+        }
+        else
+        {
+            targetPos = _initialPosition;
+            targetRot = _initialRotation;
+        }
 
         transform.position = targetPos;
         transform.rotation = targetRot;

@@ -4727,6 +4727,7 @@ MonoBehaviour:
   respawnPoint: {fileID: 0}
   floorObjectName: Floor
   minYForRespawn: -5
+  playerCamera: {fileID: 782956834}
   comboHitCooldown: 0.1
 --- !u!1 &550244799
 GameObject:
@@ -10318,7 +10319,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1296264974
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13421,7 +13422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1779065111
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16976,6 +16977,7 @@ MonoBehaviour:
   respawnPoint: {fileID: 0}
   floorObjectName: Floor
   minYForRespawn: 0
+  playerCamera: {fileID: 782956834}
   comboHitCooldown: 0.1
 --- !u!33 &8651496893477445008
 MeshFilter:
