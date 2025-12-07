@@ -311,4 +311,26 @@ public class HoverRespawnObject : MonoBehaviour
             _ballFloorHitCount = 0;
         }
     }
+    
+    public void RespawnToInitialScenePosition()
+    {
+        // Use the pose recorded in Awake (what you set up in the scene)
+        transform.position = _initialPosition;
+        transform.rotation = _initialRotation;
+
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+
+        _rb.useGravity = false;
+        _rb.isKinematic = true;
+
+        if (kind == ObjectKind.Ball)
+        {
+            _currentCombo = 0;
+            _ballFloorHitCount = 0;
+        }
+
+        _isRespawning = false;
+    }
+
 }

@@ -1373,6 +1373,7 @@ GameObject:
   m_Component:
   - component: {fileID: 132470618}
   - component: {fileID: 132470617}
+  - component: {fileID: 132470619}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1394,15 +1395,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghostManagerRoot: {fileID: 1281106633}
   levelTimesSeconds:
-  - 10
+  - 6
   - 60
   - 60
-  playerCamera: {fileID: 782956834}
-  playerMovementScripts: []
+  playerRoot: {fileID: 782956834}
   winScreen: {fileID: 455428777}
   loseScreen: {fileID: 1370220505}
-  ghostChaseSpeed: 5
-  ghostReachDistance: 0.1
+  ballRespawn: {fileID: 546324419}
 --- !u!4 &132470618
 Transform:
   m_ObjectHideFlags: 0
@@ -1418,6 +1417,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &132470619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132470616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3395fca1c9a2f3c4d9b632e657382f11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &135692792
 GameObject:
   m_ObjectHideFlags: 0

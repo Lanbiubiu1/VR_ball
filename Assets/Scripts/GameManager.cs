@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
     [Tooltip("Lose screen panel (under Canvas)")]
     public GameObject loseScreen;
 
+    [Header("Gameplay Objects")]
+    public HoverRespawnObject ballRespawn; 
+
+
     private int hitCount = 0;
     private int totalGhosts = 0;
     private int currentLevel = 0;   // 1-based index (1 = Level1)
@@ -39,6 +43,8 @@ public class GameManager : MonoBehaviour
     private Vector3 initialPlayerPos;
     private Quaternion initialPlayerRot;
     private bool hasInitialPlayerPos = false;
+    public bool IsGameOver => gameOver;
+
 
     private void Awake()
     {
@@ -131,6 +137,12 @@ public class GameManager : MonoBehaviour
         // reset player position to initial scene pos
         ResetPlayerToInitial();
 
+        // reset ball to its default scene position
+        if (ballRespawn != null)
+        {
+            ballRespawn.RespawnToInitialScenePosition();
+        }
+
         // enable ghosts / level UI
         SetGhostActiveByLevel();
 
@@ -146,6 +158,7 @@ public class GameManager : MonoBehaviour
         // reset lose flag when entering a new level
         loseRoutineStarted = false;
     }
+
 
     public void AddHit()
     {
