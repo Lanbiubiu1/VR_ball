@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Oculus.Interaction;  // for Grabbable & PointerEvent
+using Oculus.Interaction; 
 
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class HoverRespawnObject : MonoBehaviour
@@ -12,61 +12,59 @@ public class HoverRespawnObject : MonoBehaviour
     }
 
     [Header("Type")]
-    public ObjectKind kind = ObjectKind.Bat;   // dropdown in Inspector
+    public ObjectKind kind = ObjectKind.Bat; 
 
     [Header("Respawn Settings")]
     public float respawnDelay = 0.2f;
-    public Transform respawnPoint;            // optional override
+    public Transform respawnPoint;            
 
     [Header("Floor Settings")]
-    public string floorObjectName = "Floor";  // your MeshCollider object name
+    public string floorObjectName = "Floor"; 
 
     [Header("Out Of Bounds (fallback)")]
-    public float minYForRespawn = -10f;       // if ball.y < this → emergency respawn
+    public float minYForRespawn = -10f;       
 
     [Header("Player / Camera")]
-    [Tooltip("Player head / main camera (e.g. CenterEyeAnchor)")]
     public Transform playerCamera;
 
     private Rigidbody _rb;
-    private Grabbable _grabbable;             // may be null for Ball
+    private Grabbable _grabbable;            
 
     // Fallback absolute spawn
     private Vector3 _initialPosition;
     private Quaternion _initialRotation;
 
     // Camera-relative spawn data
-    private Vector3 _localOffsetXZ;           // offset around camera in its yaw-space
-    private float _spawnY;                    // fixed world Y height
-    private float _yawOffset;                 // object yaw relative to camera yaw (for bat)
+    private Vector3 _localOffsetXZ;           
+    private float _spawnY;                    
+    private float _yawOffset;                 
     private bool _hasCameraOffset = false;
 
-    private bool _isHeld = false;             // only meaningful for Bat
+    private bool _isHeld = false;             
     private bool _isRespawning = false;
 
     private int _ballFloorHitCount = 0;
 
     // COMBO
-    private int _currentCombo = 0;            // current combo for this ball life
-    private int _maxCombo = 0;                // max combo across the run
+    private int _currentCombo = 0;            
+    private int _maxCombo = 0;                
 
     [Header("Combo Settings")]
     [SerializeField]
-    private float comboHitCooldown = 0.1f;    // ignore repeated hits within this time window
+    private float comboHitCooldown = 0.1f;    
 
     private float _lastComboHitTime = -999f;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _grabbable = GetComponent<Grabbable>();  // will be null for Ball
+        _grabbable = GetComponent<Grabbable>();  
 
-        // Store absolute pose as final fallback
         _initialPosition = transform.position;
         _initialRotation = transform.rotation;
 
-        // Only Bats are grabbable
-        if (kind == ObjectKind.Bat && _grabbable != null)
+        // FIX: Listen to events for BOTH Bat and Ball
+        if (_grabbable != null)
         {
             _grabbable.WhenPointerEventRaised += HandlePointerEvent;
         }
@@ -82,58 +80,53 @@ public class HoverRespawnObject : MonoBehaviour
 
     private void Start()
     {
-        // Record camera-relative offset based on how you placed camera + bat + ball in the scene
         if (playerCamera != null)
         {
             Vector3 camPos = playerCamera.position;
             Vector3 objPos = transform.position;
 
-            // Use yaw-only rotation for local offset
             float camYaw = playerCamera.eulerAngles.y;
             Quaternion camYawRot = Quaternion.Euler(0f, camYaw, 0f);
 
             Vector3 worldOffset = objPos - camPos;
-            // Convert to camera-yaw-local space
             Vector3 localOffset = Quaternion.Inverse(camYawRot) * worldOffset;
 
             _localOffsetXZ = new Vector3(localOffset.x, 0f, localOffset.z);
             _spawnY = objPos.y;
 
-            // Yaw offset between object and camera (used for bat)
             float objYaw = transform.eulerAngles.y;
             _yawOffset = Mathf.DeltaAngle(camYaw, objYaw);
 
             _hasCameraOffset = true;
         }
 
-        // All objects start hovering/frozen
         FreezeAtRespawnPoint();
 
-        // Initialize combo UI once (ball only)
         if (kind == ObjectKind.Ball && ScoreUI.Instance != null)
         {
             ScoreUI.Instance.UpdateComboText(_maxCombo);
         }
     }
 
-    // Optional: emergency out-of-bounds respawn for the ball
     private void Update()
     {
-        if (kind == ObjectKind.Ball && !_isRespawning)
+        // Don't auto-respawn if we are holding it!
+        if (kind == ObjectKind.Ball && !_isRespawning && !_isHeld)
         {
             if (transform.position.y < minYForRespawn)
             {
                 _ballFloorHitCount = 0;
-                _currentCombo = 0; // reset combo on emergency respawn
+                _currentCombo = 0; 
                 StartCoroutine(RespawnAfterDelay());
             }
         }
     }
 
-    // ---- GRAB / RELEASE (Bat only) ----
+    // ---- GRAB / RELEASE (FIXED FOR BOTH) ----
     private void HandlePointerEvent(PointerEvent evt)
     {
-        if (kind != ObjectKind.Bat) return;
+        // FIX: Removed the "if (kind != ObjectKind.Bat) return;" check
+        // Now this logic runs for the Ball too.
 
         if (evt.Type == PointerEventType.Select)
         {
@@ -150,8 +143,10 @@ public class HoverRespawnObject : MonoBehaviour
         _isHeld = true;
         _isRespawning = false;
 
+        // While holding, physics is usually handled by Grabbable, 
+        // but we ensure clean state here.
         _rb.useGravity = false;
-        _rb.isKinematic = false;
+        _rb.isKinematic = false; // Grabbable usually sets this to true anyway
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
     }
@@ -160,36 +155,37 @@ public class HoverRespawnObject : MonoBehaviour
     {
         _isHeld = false;
 
-        // After release, bat behaves like normal physics object
+        // FIX: This forces physics ON when you throw the ball.
+        // It overrides the "restore kinematic state" behavior of the Grabbable script.
         _rb.useGravity = true;
         _rb.isKinematic = false;
+        
+        // Optional: If you want to impart extra throw velocity manually, do it here.
+        // But "Throw When Unselected" in Grabbable usually handles it.
     }
 
-    // ---- BALL: called when bat hits it (from RacketTrigger) ----
+    // ---- BALL: called when bat hits it ----
     public void ActivatePhysicsFromHit()
     {
         if (kind != ObjectKind.Ball) return;
 
+        // Force physics on (in case it was hovering)
         _rb.isKinematic = false;
         _rb.useGravity = true;
 
-        // hitting / serving the ball breaks the floor-hit chain
         _ballFloorHitCount = 0;
 
-        // --- COMBO LOGIC WITH COOLDOWN ---
         if (Time.time - _lastComboHitTime < comboHitCooldown)
         {
             return;
         }
 
         _lastComboHitTime = Time.time;
-
-        _currentCombo++;  // one more bat-ball collision in this life
+        _currentCombo++;  
 
         if (_currentCombo > _maxCombo)
         {
             _maxCombo = _currentCombo;
-
             if (ScoreUI.Instance != null)
             {
                 ScoreUI.Instance.UpdateComboText(_maxCombo);
@@ -204,31 +200,28 @@ public class HoverRespawnObject : MonoBehaviour
 
         string otherName = collision.collider.gameObject.name;
 
-        // floor logic
         if (otherName == floorObjectName)
         {
             if (kind == ObjectKind.Bat)
             {
-                // Bat: respawn immediately on floor
-                if (_isHeld) return; // still in hand: ignore
+                if (_isHeld) return; 
                 StartCoroutine(RespawnAfterDelay());
             }
             else if (kind == ObjectKind.Ball)
             {
-                // Ball: only respawn after TWO consecutive floor hits
                 _ballFloorHitCount++;
 
                 if (_ballFloorHitCount >= 2)
                 {
                     _ballFloorHitCount = 0;
-                    _currentCombo = 0;   // reset combo on respawn
+                    _currentCombo = 0;   
                     StartCoroutine(RespawnAfterDelay());
                 }
             }
         }
         else
         {
-            // Hit something that is NOT the floor (wall, racket, ghost...)
+            // Reset floor hits if we hit a wall/racket
             if (kind == ObjectKind.Ball)
             {
                 _ballFloorHitCount = 0;
@@ -242,8 +235,8 @@ public class HoverRespawnObject : MonoBehaviour
 
         yield return new WaitForSeconds(respawnDelay);
 
-        // If bat got grabbed during delay, don't snap it
-        if (kind == ObjectKind.Bat && _isHeld)
+        // If user grabbed it during the delay, cancel respawn
+        if (_isHeld)
         {
             _isRespawning = false;
             yield break;
@@ -264,7 +257,6 @@ public class HoverRespawnObject : MonoBehaviour
             float camYaw = playerCamera.eulerAngles.y;
             Quaternion camYawRot = Quaternion.Euler(0f, camYaw, 0f);
 
-            // Rotate the stored local offset with the current camera yaw
             Vector3 worldOffset = camYawRot * _localOffsetXZ;
 
             targetPos = new Vector3(
@@ -275,12 +267,10 @@ public class HoverRespawnObject : MonoBehaviour
 
             if (kind == ObjectKind.Ball)
             {
-                // Ball always faces camera forward
                 targetRot = camYawRot;
             }
-            else // Bat
+            else 
             {
-                // Bat keeps its original yaw offset relative to camera
                 targetRot = Quaternion.Euler(0f, camYaw + _yawOffset, 0f);
             }
         }
@@ -301,7 +291,7 @@ public class HoverRespawnObject : MonoBehaviour
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
 
-        // Hover / freeze in air
+        // Reset to hovering state
         _rb.useGravity = false;
         _rb.isKinematic = true;
 
@@ -314,7 +304,6 @@ public class HoverRespawnObject : MonoBehaviour
     
     public void RespawnToInitialScenePosition()
     {
-        // Use the pose recorded in Awake (what you set up in the scene)
         transform.position = _initialPosition;
         transform.rotation = _initialRotation;
 
@@ -332,5 +321,4 @@ public class HoverRespawnObject : MonoBehaviour
 
         _isRespawning = false;
     }
-
 }

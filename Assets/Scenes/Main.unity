@@ -3895,7 +3895,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &400600673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3909,11 +3909,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   racketPlane: {fileID: 400600671}
-  ball: {fileID: 546324416}
-  minHitSpeed: 10
-  speedMultiplier: 1.5
-  velocitySmoothing: 0.2
-  debugVelocity: 0
+  sweetSpot: {fileID: 0}
+  racketCollider: {fileID: 0}
+  forceMultiplier: 1.5
+  baseBounce: 2
+  swingInfluence: 0.8
+  useHitPointOffset: 1
+  offCenterAngleFactor: 30
+  debugVisuals: 1
 --- !u!65 &400600674
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5480,7 +5483,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 546324412}
   serializedVersion: 4
-  m_Mass: 0.024
+  m_Mass: 0.057
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -5498,7 +5501,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &546324418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5517,7 +5520,7 @@ MonoBehaviour:
   _oneGrabTransformer: {fileID: 0}
   _twoGrabTransformer: {fileID: 0}
   _targetTransform: {fileID: 546324416}
-  _maxGrabPoints: -1
+  _maxGrabPoints: 1
   _rigidbody: {fileID: 546324417}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
@@ -10272,13 +10275,9 @@ MonoBehaviour:
   controller: 2
   triggerAxis: 1
   triggerThreshold: 0.5
-  maxResults: 16
-  requiredTag: 
   attachTag: Bat
-  resetLocalPosition: 0
-  resetLocalRotation: 0
-  resetLocalScale: 0
-  setRigidbodyKinematicOnAttach: 1
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1127400249
 GameObject:
   m_ObjectHideFlags: 0
@@ -11876,13 +11875,9 @@ MonoBehaviour:
   controller: 3
   triggerAxis: 1
   triggerThreshold: 0.5
-  maxResults: 16
-  requiredTag: 
   attachTag: Bat
-  resetLocalPosition: 1
-  resetLocalRotation: 1
-  resetLocalScale: 0
-  setRigidbodyKinematicOnAttach: 1
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1317735904
 GameObject:
   m_ObjectHideFlags: 0
@@ -13984,8 +13979,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.4, z: 0.07844257}
-  m_Center: {x: 0, y: 0, z: 0.039221287}
+  m_Size: {x: 0.28292227, y: 0.39310604, z: 0.049821615}
+  m_Center: {x: -0.008538872, y: -0.0034469664, z: 0.053531766}
 --- !u!114 &1617152021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13999,11 +13994,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   racketPlane: {fileID: 1617152019}
-  ball: {fileID: 546324416}
-  minHitSpeed: 10
-  speedMultiplier: 1.5
-  velocitySmoothing: 0.2
-  debugVelocity: 0
+  sweetSpot: {fileID: 0}
+  racketCollider: {fileID: 0}
+  forceMultiplier: 1
+  baseBounce: 2
+  swingInfluence: 0.8
+  useHitPointOffset: 1
+  offCenterAngleFactor: 30
+  debugVisuals: 1
 --- !u!54 &1617152022
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -14030,7 +14028,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!1 &1622123963
 GameObject:
   m_ObjectHideFlags: 0
@@ -16708,13 +16706,9 @@ MonoBehaviour:
   controller: 1
   triggerAxis: 1
   triggerThreshold: 0.5
-  maxResults: 16
-  requiredTag: 
   attachTag: Bat
-  resetLocalPosition: 0
-  resetLocalRotation: 0
-  resetLocalScale: 0
-  setRigidbodyKinematicOnAttach: 1
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1942243959
 GameObject:
   m_ObjectHideFlags: 0
@@ -16886,13 +16880,9 @@ MonoBehaviour:
   controller: 2
   triggerAxis: 1
   triggerThreshold: 0.5
-  maxResults: 16
-  requiredTag: 
   attachTag: Bat
-  resetLocalPosition: 1
-  resetLocalRotation: 1
-  resetLocalScale: 0
-  setRigidbodyKinematicOnAttach: 1
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1959240869
 GameObject:
   m_ObjectHideFlags: 0

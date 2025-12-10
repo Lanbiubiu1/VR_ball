@@ -2,67 +2,124 @@ using UnityEngine;
 
 public class RacketTrigger : MonoBehaviour
 {
-    public Transform racketPlane;  // 球拍平面（球拍面）
-    public Transform ball;
-    public float minHitSpeed = 6f;
-    public float speedMultiplier = 1.2f; // 击球时使用的倍率
-    public float velocitySmoothing = 0.2f; // 速度平滑插值系数 (0-1)
-    public bool debugVelocity = false;
+    [Header("Setup")]
+    public Transform racketPlane;      // The visual mesh or center of the strings
+    public Transform sweetSpot;        // Assign a transform at the perfect center of the racket
+    public Collider racketCollider;    // The collider on this object
 
+    [Header("Physics Settings")]
+    public float forceMultiplier = 1.5f;   // How much force to add based on swing speed
+    public float baseBounce = 2.0f;        // Minimum bounce even if racket is still
+    [Range(0, 1)] public float swingInfluence = 0.8f; // 1.0 = Ball goes exactly where you swing. 0.0 = Mirror reflection.
+    
+    [Header("Precision")]
+    public bool useHitPointOffset = true;  // If true, hitting edge of racket angles the ball
+    public float offCenterAngleFactor = 30f; // How much the ball angles if hit at the edge
+
+    [Header("Debug")]
+    public bool debugVisuals = true;
+
+    // State
     private Vector3 previousPos;
-    private Vector3 smoothedVelocity;
-
-    private Vector3 ballLastPos;
+    private Vector3 currentVelocity;
+    private float hitCooldown = 0.0f; // Prevent double hits in the same swing
 
     void Start()
     {
-        ballLastPos = ball.position;
         previousPos = transform.position;
+        if (racketCollider == null) racketCollider = GetComponent<Collider>();
+   
+        if (sweetSpot == null) sweetSpot = transform; 
     }
 
     void Update()
     {
-        // 原始速度（世界空间）
-        Vector3 rawVel = (transform.position - previousPos) / Mathf.Max(Time.deltaTime, 0.0001f);
+
+        Vector3 displacement = transform.position - previousPos;
+        currentVelocity = displacement / Mathf.Max(Time.deltaTime, 0.0001f);
+        
+
+        
         previousPos = transform.position;
 
-        // 简单平滑
-        smoothedVelocity = Vector3.Lerp(smoothedVelocity, rawVel, velocitySmoothing);
 
-        if (debugVelocity)
-        {
-            Debug.DrawLine(transform.position, transform.position + smoothedVelocity * 0.05f, Color.yellow);
-        }
+        if (hitCooldown > 0) hitCooldown -= Time.deltaTime;
     }
 
-    void OnTriggerStay(Collider other)
+
+    void OnTriggerEnter(Collider other)
     {
+        if (hitCooldown > 0) return;
+
         if (other.CompareTag("Ball"))
         {
-            HitBall(racketPlane.forward, other);
+            HandleCollision(other);
+            hitCooldown = 0.2f; 
         }
     }
 
-    void HitBall(Vector3 normal, Collider other)
+    void HandleCollision(Collider ballCollider)
     {
-        // 优先使用触发到的球体刚体
-        Rigidbody rb = other.attachedRigidbody != null ? other.attachedRigidbody : ball.GetComponent<Rigidbody>();
+        Rigidbody ballRb = ballCollider.attachedRigidbody;
+        if (ballRb == null) return;
 
-        var hoverObj = rb.GetComponent<HoverRespawnObject>();
-        if (hoverObj != null)
+
+        Vector3 hitPoint = racketCollider.ClosestPoint(ballCollider.transform.position);
+
+
+        Vector3 faceNormal = racketPlane.forward;
+
+        Vector3 swingDirection = currentVelocity.normalized;
+        float swingSpeed = currentVelocity.magnitude;
+
+        Vector3 incomingVel = ballRb.velocity;
+
+
+        Vector3 relativeVelocity = incomingVel - currentVelocity;
+
+
+        Vector3 reflectionDir = Vector3.Reflect(relativeVelocity, faceNormal).normalized;
+
+
+        Vector3 finalDirection = Vector3.Lerp(reflectionDir, swingDirection, swingInfluence).normalized;
+
+
+        if (useHitPointOffset)
         {
-            hoverObj.ActivatePhysicsFromHit();
+
+            Vector3 offsetVector = hitPoint - sweetSpot.position;
+
+            Vector3 planeOffset = Vector3.ProjectOnPlane(offsetVector, faceNormal);
+            
+
+            float deviationAngle = planeOffset.magnitude * offCenterAngleFactor; 
+
+            Vector3 rotationAxis = Vector3.Cross(faceNormal, planeOffset).normalized;
+
+            if (rotationAxis.sqrMagnitude > 0.001f)
+            {
+                Quaternion deflection = Quaternion.AngleAxis(deviationAngle, rotationAxis);
+                finalDirection = deflection * finalDirection;
+            }
         }
 
-        // 反弹方向 = 平面法线
-        Vector3 dir = normal;
-        float racketSpeed = smoothedVelocity.magnitude;
-        float appliedSpeed = Mathf.Max(minHitSpeed, racketSpeed * speedMultiplier);
-        rb.velocity = dir.normalized * appliedSpeed;
 
-        if (debugVelocity)
+        float totalForce = baseBounce + (swingSpeed * forceMultiplier);
+        
+
+        totalForce += incomingVel.magnitude * 0.2f; 
+
+        ballRb.velocity = finalDirection * totalForce;
+
+
+        var hoverObj = ballRb.GetComponent<HoverRespawnObject>();
+        if (hoverObj != null) hoverObj.ActivatePhysicsFromHit();
+
+        if (debugVisuals)
         {
-            Debug.Log($"Hit Ball | RacketSpeed={racketSpeed:F2} Applied={appliedSpeed:F2}");
+            Debug.DrawLine(hitPoint, hitPoint + finalDirection * 2f, Color.green, 2f);
+            Debug.DrawLine(hitPoint, hitPoint + faceNormal, Color.blue, 2f);
+            Debug.Log($"Hit! Speed: {totalForce:F1} | Off-Center: {Vector3.Distance(hitPoint, sweetSpot.position):F3}");
         }
     }
 }
