@@ -18,7 +18,7 @@ public class PowerUpManager : MonoBehaviour
 
     [Header("UI")]
     public GameObject powerUpRoot;
-    public TMP_Text speedlText;
+    public TMP_Text speedText;
     public TMP_Text sizeText;
     public GameObject speedButtom;
     public GameObject sizeButtom;
@@ -208,7 +208,7 @@ public class PowerUpManager : MonoBehaviour
     private void updateText(bool isSize)
     {
         int level = isSize ? currenrSizeLevel : currentSpeedLevel;
-        TMP_Text target = isSize ? sizeText : speedlText;
+        TMP_Text target = isSize ? sizeText : speedText;
 
         if (target == null) return;
 

@@ -957,8 +957,8 @@ MonoBehaviour:
   - 60
   - 60
   - 60
-  - 60
-  - 60
+  - 120
+  - 120
   playerRoot: {fileID: 782956834}
   winScreen: {fileID: 455428777}
   loseScreen: {fileID: 1370220505}
@@ -3200,13 +3200,14 @@ GameObject:
   - component: {fileID: 304503068}
   - component: {fileID: 304503067}
   - component: {fileID: 304503066}
+  - component: {fileID: 304503070}
   m_Layer: 5
   m_Name: PowerUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &304503066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3293,6 +3294,29 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &304503070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 304503065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3818c5a5cc0515b44b2a2cab51c51db2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currenrSizeLevel: 0
+  currentSpeedLevel: 0
+  MAX_LEVEL: 3
+  isPowerUpActive: 0
+  powerUpRoot: {fileID: 304503065}
+  speedText: {fileID: 206321048}
+  sizeText: {fileID: 429974954}
+  speedButtom: {fileID: 611178390}
+  sizeButtom: {fileID: 216320417}
+  ballObject: {fileID: 546324412}
+  locomotor: {fileID: 637136217}
 --- !u!1 &306646350
 GameObject:
   m_ObjectHideFlags: 0
@@ -6752,6 +6776,17 @@ Transform:
   - {fileID: 11389023}
   m_Father: {fileID: 1464968992}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &637136217 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5801245061754409418, guid: 0a7d2469f24041c4284c66706f84c45e, type: 3}
+  m_PrefabInstance: {fileID: 1851083664}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec6a2955cc1374944a4634c6f312985a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &643896670
 GameObject:
   m_ObjectHideFlags: 0
