@@ -9,6 +9,9 @@ public class GhostLoseChaser : MonoBehaviour
 
     public bool flipYRotation = false;
 
+    [Header("Stop Condition")]
+    public float stopDistance = 0.5f;
+
     private Transform _target;
     private bool _isChasing = false;
 
@@ -31,11 +34,16 @@ public class GhostLoseChaser : MonoBehaviour
         Vector3 currentPos = transform.position;
 
         Vector3 dir = targetPos - currentPos;
-        if (dir.sqrMagnitude < 0.0001f) return;
+
+        if (dir.sqrMagnitude <= stopDistance * stopDistance)
+        {
+            _isChasing = false;
+            gameObject.SetActive(false); 
+            return;
+        }
 
         dir.Normalize();
 
-        // Move toward the player
         transform.position += dir * chaseSpeed * Time.deltaTime;
 
         Quaternion targetRot = Quaternion.LookRotation(dir, Vector3.up);
