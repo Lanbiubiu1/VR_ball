@@ -184,13 +184,58 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoseAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        if (ballRespawn != null)
+        {
+            ballRespawn.gameObject.SetActive(false);
+        }
 
-        if (!gameOver)  // if we didn't already win in those 5s
+        TriggerGhostsChargePlayer();
+
+        float elapsed = 0f;
+        while (elapsed < delay && !gameOver)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!gameOver)
         {
             LoseGame();
         }
     }
+
+    private void TriggerGhostsChargePlayer()
+    {
+        if (playerRoot == null) return;
+        if (ghostManagerRoot == null) return;
+        if (currentLevel <= 0 || currentLevel > ghostManagerRoot.childCount) return;
+
+        Transform level = ghostManagerRoot.GetChild(currentLevel - 1);
+
+        for (int i = 0; i < level.childCount; i++)
+        {
+            Transform ghostRoot = level.GetChild(i);
+            if (!ghostRoot.gameObject.activeInHierarchy) continue;
+
+            var tp = ghostRoot.GetComponentInChildren<GhostTeleportAndPathFollower>(true);
+            if (tp != null)
+            {
+                tp.StopTeleportAndCleanup();
+                tp.enabled = false;
+            }
+
+            var pf = ghostRoot.GetComponentInChildren<GhostPathFollower>(true);
+            if (pf != null) pf.enabled = false;
+
+            var chaser = ghostRoot.GetComponentInChildren<GhostLoseChaser>(true);
+            if (chaser != null)
+            {
+                chaser.StartChase(playerRoot);
+            }
+        }
+    }
+
+
 
     private void WinGame()
     {
@@ -308,8 +353,15 @@ public class GameManager : MonoBehaviour
         // reset player transform
         ResetPlayerToInitial();
 
+        if (ballRespawn != null)
+        {
+            ballRespawn.gameObject.SetActive(true);
+            ballRespawn.RespawnToInitialScenePosition();
+        }
+
         // restart from level 1
         GoToNextLevel();
+
     }
 
     public void QuitGame()
