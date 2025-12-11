@@ -138,7 +138,7 @@ public class HoverRespawnObject : MonoBehaviour
         }
     }
 
-    private void OnGrab()
+    public void OnGrab()
     {
         _isHeld = true;
         _isRespawning = false;
@@ -151,7 +151,7 @@ public class HoverRespawnObject : MonoBehaviour
         _rb.angularVelocity = Vector3.zero;
     }
 
-    private void OnRelease()
+    public void OnRelease()
     {
         _isHeld = false;
 
