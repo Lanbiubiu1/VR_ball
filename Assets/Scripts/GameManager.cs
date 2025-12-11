@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using NaughtyAttributes;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,7 +27,10 @@ public class GameManager : MonoBehaviour
     public GameObject loseScreen;
 
     [Header("Gameplay Objects")]
-    public HoverRespawnObject ballRespawn; 
+    public HoverRespawnObject ballRespawn;
+
+    [Header("Lose Chase Audio")]
+    public AudioSource playerChaseAudio;
 
 
     private int hitCount = 0;
@@ -185,11 +189,11 @@ public class GameManager : MonoBehaviour
     private IEnumerator LoseAfterDelay(float delay)
     {
         if (ballRespawn != null)
-        {
             ballRespawn.gameObject.SetActive(false);
-        }
 
         TriggerGhostsChargePlayer();
+
+        StartCoroutine(PlayChaseAudioAfterDelay(1f));
 
         float elapsed = 0f;
         while (elapsed < delay && !gameOver)
@@ -199,8 +203,16 @@ public class GameManager : MonoBehaviour
         }
 
         if (!gameOver)
-        {
             LoseGame();
+    }
+
+    private IEnumerator PlayChaseAudioAfterDelay(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+
+        if (!gameOver && playerChaseAudio != null)
+        {
+            playerChaseAudio.Play();
         }
     }
 
@@ -332,6 +344,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Replay button: soft reset (no scene reload)
+    [Button]
     public void Restart()
     {
         // reset state
