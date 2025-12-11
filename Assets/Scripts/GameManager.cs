@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
         return Mathf.Max(0f, levelTimesSeconds[levelTimesSeconds.Count - 1]);
     }
 
-    private void GoToNextLevel()
+    public void GoToNextLevel()
     {
         if (gameOver) return;
 
@@ -181,7 +181,17 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                GoToNextLevel();
+                // show power-up choice (if available)
+                if (PowerUpManager.Instance != null)
+                {
+                    ResetPlayerToInitial();
+                    PowerUpManager.Instance.ShowPowerUp();
+                }
+                else
+                {
+                    // fallback: no power-up manager, just go next level
+                    GoToNextLevel();
+                }
             }
         }
     }
@@ -370,6 +380,12 @@ public class GameManager : MonoBehaviour
         {
             ballRespawn.gameObject.SetActive(true);
             ballRespawn.RespawnToInitialScenePosition();
+        }
+
+        // reset power ups
+        if (PowerUpManager.Instance != null)
+        {
+            PowerUpManager.Instance.ResetAllPowerUps();
         }
 
         // restart from level 1

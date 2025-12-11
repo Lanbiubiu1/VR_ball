@@ -32,14 +32,6 @@ public class VRButtonController : MonoBehaviour
 
     private void Update()
     {
-        // Need a valid GameManager and game must be over (win OR lose)
-        if (GameManager.Instance == null || !GameManager.Instance.IsGameOver)
-        {
-            lastPrimaryPressed = false;
-            lastSecondaryPressed = false;
-            return;
-        }
-
         // Reacquire if lost
         if (!leftHand.isValid || !rightHand.isValid)
         {
@@ -55,18 +47,54 @@ public class VRButtonController : MonoBehaviour
             GetSecondaryPress(leftHand) ||
             GetSecondaryPress(rightHand); // B (right) or Y (left)
 
-        // A / X pressed this frame → Replay
-        if (primaryPressed && !lastPrimaryPressed)
+        var gm = GameManager.Instance;
+        var pm = PowerUpManager.Instance;
+
+        // 1) If game over: buttons control replay / quit
+        if (gm != null && gm.IsGameOver)
         {
-            GameManager.Instance.Restart();
+            if (primaryPressed && !lastPrimaryPressed)
+            {
+                gm.Restart();
+            }
+
+            if (secondaryPressed && !lastSecondaryPressed)
+            {
+                gm.QuitGame();
+            }
+
+            lastPrimaryPressed = primaryPressed;
+            lastSecondaryPressed = secondaryPressed;
+            return;
         }
 
-        // B / Y pressed this frame → Quit
-        if (secondaryPressed && !lastSecondaryPressed)
+        // 2) Else if power-up screen is active: buttons pick power-up
+        if (pm != null && pm.isPowerUpActive)
         {
-            GameManager.Instance.QuitGame();
+            // A / X → speed (if not max)
+            if (primaryPressed && !lastPrimaryPressed)
+            {
+                if (pm.currentSpeedLevel < pm.MAX_LEVEL)
+                {
+                    pm.selectSpeed(); // false = speed
+                }
+            }
+
+            // B / Y → size (if not max)
+            if (secondaryPressed && !lastSecondaryPressed)
+            {
+                if (pm.currenrSizeLevel < pm.MAX_LEVEL)
+                {
+                    pm.selectSize(); // true = size
+                }
+            }
+
+            lastPrimaryPressed = primaryPressed;
+            lastSecondaryPressed = secondaryPressed;
+            return;
         }
 
+        // 3) Otherwise, nothing special; just update last states
         lastPrimaryPressed = primaryPressed;
         lastSecondaryPressed = secondaryPressed;
     }
