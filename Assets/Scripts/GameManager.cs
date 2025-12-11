@@ -353,44 +353,53 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Replay button: soft reset (no scene reload)
+    //// Replay button: soft reset (no scene reload)
+    //[Button]
+    //public void Restart()
+    //{
+    //    // reset state
+    //    gameOver = false;
+    //    timerRunning = false;
+    //    loseRoutineStarted = false;
+
+    //    hitCount = 0;
+    //    currentLevel = 0;
+    //    totalGhosts = 0;
+
+    //    // disable both screens + their children
+    //    SetScreenActive(winScreen, false);
+    //    SetScreenActive(loseScreen, false);
+
+    //    // reset ghosts
+    //    SetAllGhostDisable();
+
+    //    // reset player transform
+    //    ResetPlayerToInitial();
+
+    //    if (ballRespawn != null)
+    //    {
+    //        ballRespawn.gameObject.SetActive(true);
+    //        ballRespawn.RespawnToInitialScenePosition();
+    //    }
+
+    //    // reset power ups
+    //    if (PowerUpManager.Instance != null)
+    //    {
+    //        PowerUpManager.Instance.ResetAllPowerUps();
+    //    }
+
+    //    // restart from level 1
+    //    GoToNextLevel();
+
+    //}
+
     [Button]
     public void Restart()
     {
-        // reset state
-        gameOver = false;
-        timerRunning = false;
-        loseRoutineStarted = false;
+        Time.timeScale = 1f;
 
-        hitCount = 0;
-        currentLevel = 0;
-        totalGhosts = 0;
-
-        // disable both screens + their children
-        SetScreenActive(winScreen, false);
-        SetScreenActive(loseScreen, false);
-
-        // reset ghosts
-        SetAllGhostDisable();
-
-        // reset player transform
-        ResetPlayerToInitial();
-
-        if (ballRespawn != null)
-        {
-            ballRespawn.gameObject.SetActive(true);
-            ballRespawn.RespawnToInitialScenePosition();
-        }
-
-        // reset power ups
-        if (PowerUpManager.Instance != null)
-        {
-            PowerUpManager.Instance.ResetAllPowerUps();
-        }
-
-        // restart from level 1
-        GoToNextLevel();
-
+        var activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(activeScene.buildIndex);
     }
 
     public void QuitGame()

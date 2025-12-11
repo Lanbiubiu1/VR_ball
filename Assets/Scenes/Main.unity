@@ -3212,7 +3212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &304503066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4305,6 +4305,7 @@ MonoBehaviour:
   swingInfluence: 0.8
   useHitPointOffset: 1
   offCenterAngleFactor: 30
+  hitNormalAxis: 0
   debugVisuals: 1
 --- !u!65 &400600674
 BoxCollider:
@@ -11551,8 +11552,8 @@ MonoBehaviour:
   triggerAxis: 1
   triggerThreshold: 0.5
   attachTag: Bat
-  fixPosition: {x: 0, y: -0.1, z: 0}
-  fixRotation: {x: 90, y: 0, z: 0}
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1127400249
 GameObject:
   m_ObjectHideFlags: 0
@@ -13516,8 +13517,8 @@ MonoBehaviour:
   triggerAxis: 1
   triggerThreshold: 0.5
   attachTag: Bat
-  fixPosition: {x: 0, y: -0.1, z: 0}
-  fixRotation: {x: 90, y: 0, z: 0}
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1317735904
 GameObject:
   m_ObjectHideFlags: 0
@@ -16212,6 +16213,7 @@ MonoBehaviour:
   swingInfluence: 0.8
   useHitPointOffset: 1
   offCenterAngleFactor: 30
+  hitNormalAxis: 2
   debugVisuals: 1
 --- !u!54 &1617152022
 Rigidbody:
@@ -19013,8 +19015,8 @@ MonoBehaviour:
   triggerAxis: 1
   triggerThreshold: 0.5
   attachTag: Bat
-  fixPosition: {x: 0, y: -0.1, z: 0}
-  fixRotation: {x: 90, y: 0, z: 0}
+  snapPosition: 1
+  snapRotation: 1
 --- !u!4 &1933666133 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2434494867400534697, guid: 8605133dce2eae048b581470a379c48b, type: 3}
@@ -19200,8 +19202,8 @@ MonoBehaviour:
   triggerAxis: 1
   triggerThreshold: 0.5
   attachTag: Bat
-  fixPosition: {x: 0, y: -0.1, z: 0}
-  fixRotation: {x: 90, y: 0, z: 90}
+  snapPosition: 1
+  snapRotation: 1
 --- !u!1 &1959240869
 GameObject:
   m_ObjectHideFlags: 0
