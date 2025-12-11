@@ -164,6 +164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7d2d4b954326948801ab149f7f91ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AudioPlayerPrefab: {fileID: 5955577321091424083, guid: cc1ae0355cb4668459ffe7ef8c48fbdb, type: 3}
+  GhostHitSound: {fileID: 8300000, guid: ed98e20ce78cfac45b5329ea7225469c, type: 3}
 --- !u!1 &7164124352463755296
 GameObject:
   m_ObjectHideFlags: 0

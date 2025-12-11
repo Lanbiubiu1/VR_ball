@@ -3,6 +3,8 @@ using NaughtyAttributes;
 
 public class GhostCollision : MonoBehaviour
 {
+    public GameObject AudioPlayerPrefab;
+    public AudioClip GhostHitSound;
     private Collider _col;
 
     private void Awake()
@@ -34,6 +36,10 @@ public class GhostCollision : MonoBehaviour
             }
             gameObject.SetActive(false);
         }
+        var audioPlayer = Instantiate(AudioPlayerPrefab, transform.position, Quaternion.identity);
+        var audioSource = audioPlayer.GetComponent<AudioSource>();
+        audioSource.clip = GhostHitSound;
+        audioSource.Play();
     }
 
     private void OnTriggerEnter(Collider other)

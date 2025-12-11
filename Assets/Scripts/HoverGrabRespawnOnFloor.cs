@@ -173,6 +173,9 @@ public class HoverRespawnObject : MonoBehaviour
         _rb.isKinematic = false;
         _rb.useGravity = true;
 
+        //play audio
+        GetComponent<AudioSource>()?.Play();
+
         _ballFloorHitCount = 0;
 
         if (Time.time - _lastComboHitTime < comboHitCooldown)
