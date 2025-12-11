@@ -51,8 +51,8 @@ MonoBehaviour:
   - {fileID: 961889714056404682}
   - {fileID: 8885546866898441505}
   - {fileID: 3924695947111264729}
-  moveSpeed: 2
-  waitTimeAtPoint: 0.3
+  moveSpeed: 1
+  waitTimeAtPoint: 0
   rotationSpeed: 5
 --- !u!114 &6720515976309783984
 MonoBehaviour:
@@ -142,6 +142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8110149934776977850}
   - component: {fileID: 730939028463719269}
+  - component: {fileID: 778793595431856065}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Untagged
@@ -183,6 +184,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioPlayerPrefab: {fileID: 5955577321091424083, guid: cc1ae0355cb4668459ffe7ef8c48fbdb, type: 3}
   GhostHitSound: {fileID: 8300000, guid: ed98e20ce78cfac45b5329ea7225469c, type: 3}
+--- !u!114 &778793595431856065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067889111389323568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff98c69fd52baf44aa47a5ebcabd9bf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderer: {fileID: 7627303700163595376}
+  dissolveTemplate: {fileID: 2100000, guid: 1a50a9ace93fd614db63694d201e262b, type: 2}
+  dissolveProperty: _Dissolve
+  dissolveDuration: 1
+  disableCollidersOnDissolveStart: 0
 --- !u!1 &7164124352463755296
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,5 +324,10 @@ PrefabInstance:
 --- !u!4 &7627303698818071337 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8954800359469898614, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
+  m_PrefabInstance: {fileID: 1557250649113796703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &7627303700163595376 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8954800358130625583, guid: d0689260bad5ace43851bc4ad441f23d, type: 3}
   m_PrefabInstance: {fileID: 1557250649113796703}
   m_PrefabAsset: {fileID: 0}
