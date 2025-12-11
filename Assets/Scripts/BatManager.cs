@@ -92,11 +92,7 @@ public class BatManager : MonoBehaviour
             _currentHeldRb.angularVelocity = Vector3.zero;
         }
 
-        // 2. Notify Hover Script (Fixes Floating)
-        if (_hoverScript != null)
-        {
-            _hoverScript.OnGrab();
-        }
+      
 
         // 3. Parent to Hand
         _currentHeldObject.transform.SetParent(transform);
@@ -122,11 +118,6 @@ public class BatManager : MonoBehaviour
             _currentHeldRb.velocity = throwVel;
         }
 
-        if (_hoverScript != null)
-        {
-            _hoverScript.OnRelease();
-            _hoverScript = null;
-        }
 
         Debug.Log($"[BatManager] Dropped: {_currentHeldObject.name}");
 
